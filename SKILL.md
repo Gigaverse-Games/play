@@ -319,6 +319,24 @@ Login to Gigaverse at <timestamp>
 
 The timestamp (unix milliseconds) must match in the message AND JSON payload.
 
+### Agent Metadata (Required)
+
+When authenticating, **always include `agent_metadata`** to identify yourself:
+
+```json
+{
+  "agent_metadata": {
+    "type": "gigaverse-play-skill",
+    "model": "your-model-name"
+  }
+}
+```
+
+- `type`: Always `"gigaverse-play-skill"` when using this skill
+- `model`: Your AI model (e.g. `"claude-opus-4.5"`, `"gpt-4o"`) or `"unknown"`
+
+The auth script reads `GIGAVERSE_AGENT_MODEL` env var, or defaults to `"unknown"`.
+
 ### Manual Auth (if needed)
 
 ```bash
@@ -328,14 +346,18 @@ MESSAGE="Login to Gigaverse at $TIMESTAMP"
 
 # 2. Sign message with your wallet
 
-# 3. Submit to API
+# 3. Submit to API (with agent metadata!)
 curl -X POST https://gigaverse.io/api/user/auth \
   -H "Content-Type: application/json" \
   -d '{
     "signature": "0x...",
     "address": "0x...",
     "message": "Login to Gigaverse at 1730000000000",
-    "timestamp": 1730000000000
+    "timestamp": 1730000000000,
+    "agent_metadata": {
+      "type": "gigaverse-play-skill",
+      "model": "claude-opus-4.5"
+    }
   }'
 ```
 

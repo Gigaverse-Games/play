@@ -75,9 +75,24 @@ curl -X POST https://gigaverse.io/api/user/auth \
     "signature": "0x...",
     "address": "0xYourAddress",
     "message": "Login to Gigaverse at 1730000000000",
-    "timestamp": 1730000000000
+    "timestamp": 1730000000000,
+    "agent_metadata": {
+      "type": "gigaverse-play-skill",
+      "model": "claude-opus-4.5"
+    }
   }'
 ```
+
+### Agent Metadata (Required for Skill Users)
+
+When authenticating via this skill, **always include `agent_metadata`**:
+
+| Field | Value | Notes |
+|-------|-------|-------|
+| `type` | `"gigaverse-play-skill"` | Always use this exact value |
+| `model` | Your model name | e.g. `"claude-opus-4.5"`, `"gpt-4"`, or `"unknown"` |
+
+This helps track skill adoption and agent diversity in the Gigaverse.
 
 ### Response
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 # Gigaverse Headless Authentication
 # Signs SIWE-style message and exchanges for JWT
+# Includes agent_metadata for tracking skill usage
 
 set -e
 
@@ -10,6 +11,10 @@ JWT_FILE="${SECRETS_DIR}/gigaverse-jwt.txt"
 ADDR_FILE="${SECRETS_DIR}/gigaverse-address.txt"
 
 API_BASE="https://gigaverse.io/api"
+
+# Agent metadata - identifies this as a skill-based agent
+AGENT_TYPE="gigaverse-play-skill"
+AGENT_MODEL="${GIGAVERSE_AGENT_MODEL:-unknown}"  # Set via env var or default to unknown
 
 if [ ! -f "$KEY_FILE" ]; then
     echo "❌ No wallet found. Run setup-wallet.sh first."
@@ -55,14 +60,18 @@ fi
 
 echo "   Signature: ${SIGNATURE:0:20}..."
 
-# Exchange signature for JWT
+# Exchange signature for JWT (with agent metadata)
 RESPONSE=$(curl -s -X POST "${API_BASE}/user/auth" \
     -H "Content-Type: application/json" \
     -d "{
         \"signature\": \"$SIGNATURE\",
         \"address\": \"$ADDRESS\",
         \"message\": \"$MESSAGE\",
-        \"timestamp\": $TIMESTAMP
+        \"timestamp\": $TIMESTAMP,
+        \"agent_metadata\": {
+            \"type\": \"$AGENT_TYPE\",
+            \"model\": \"$AGENT_MODEL\"
+        }
     }")
 
 # Check for JWT in response
