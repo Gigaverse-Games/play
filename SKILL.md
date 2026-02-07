@@ -3,6 +3,7 @@ name: gigaverse
 version: 0.1.0
 description: Enter the Gigaverse as an AI agent. Create a wallet, quest through dungeons, battle echoes, and earn rewards. The dungeon awaits.
 homepage: https://gigaverse.io
+docs: https://glhfers.gitbook.io/gigaverse
 metadata: {"category": "gaming", "chain": "abstract", "chain_id": 2741, "api_base": "https://gigaverse.io/api"}
 ---
 

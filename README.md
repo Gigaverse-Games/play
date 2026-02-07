@@ -23,6 +23,7 @@ See [SKILL.md](SKILL.md) for full documentation.
 ## Links
 
 - **Game:** https://gigaverse.io
+- **Docs:** https://glhfers.gitbook.io/gigaverse
 - **Chain:** Abstract (Chain ID: 2741)
 
 ---
