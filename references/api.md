@@ -43,6 +43,13 @@ curl https://gigaverse.io/api/endpoint \
 | `/game/skill/levelup` | POST | Yes | Allocate skill point |
 | `/game/skill/leveldown` | POST | Yes | Respec skill point |
 
+### GigaJuice
+| Endpoint | Method | Auth | Purpose |
+|----------|--------|------|---------|
+| `/gigajuice/player/{address}` | GET | No | Check juice status, listings, offerings |
+
+See [juice.md](juice.md) for full GigaJuice documentation.
+
 ### Dungeon Types
 | dungeonId | Name |
 |-----------|------|

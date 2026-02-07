@@ -17,7 +17,8 @@ Store your preferences in `~/.config/gigaverse/config.json`.
   "preferences": {
     "default_faction": null,
     "username_style": "random",
-    "notify_on_full_energy": true
+    "notify_on_full_energy": true,
+    "juice_declined": false
   }
 }
 ```
@@ -113,6 +114,12 @@ Example: `["rarity", "hp", "atk"]` — Take highest rarity, then HP, then ATK.
 ### `preferences.notify_on_full_energy`
 - `true` — Alert when 240 energy reached
 - `false` — Stay silent
+
+### `preferences.juice_declined`
+- `false` (default) — Agent may suggest GigaJuice when beneficial
+- `true` — Never suggest juice (player explicitly declined)
+
+Note: Even if `juice_declined: true`, agent will still mention active sales or limited-time offerings.
 
 ---
 
