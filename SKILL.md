@@ -261,6 +261,66 @@ curl https://gigaverse.io/api/game/dungeon/today \
 
 ---
 
+## GigaJuice 🧃
+
+GigaJuice is a premium subscription that enhances your Gigaverse experience. Juiced players get significant gameplay advantages.
+
+### Benefits
+
+| Benefit | Description |
+|---------|-------------|
+| 🎲 **Extra Upgrade Options** | Occasional 4th upgrade choice in dungeons |
+| ⚡ **Double Energy** | 2x daily energy regeneration (480 max vs 240) |
+| 🧪 **Extra Potion Slot** | Additional consumable slot for dungeon runs |
+| 🎣 **Extra Fishing Runs** | More fishing attempts per day |
+
+### Check Juice Status
+
+```bash
+curl https://gigaverse.io/api/gigajuice/player/YOUR_ADDRESS
+```
+
+Response includes:
+- `isJuiced`: Whether player currently has active juice
+- `listings`: Available juice packages with prices
+
+### Purchasing Juice
+
+Juice is purchased onchain via the GigaJuice contract:
+
+**Contract:** [`0xd154ab0de91094bfa8e87808f9a0f7f1b98e1ce1`](https://abscan.org/address/0xd154ab0de91094bfa8e87808f9a0f7f1b98e1ce1)
+
+**Chain:** Abstract (Chain ID: 2741)
+
+To purchase:
+1. Check available listings via the API
+2. Call the contract's purchase function with the listing ID
+3. Pay the listed price in ETH
+
+### Using Juice in Runs
+
+When starting a juiced run, set `isJuiced: true`:
+
+```bash
+curl -X POST https://gigaverse.io/api/game/dungeon/action \
+  -H "Authorization: Bearer $JWT" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "start_run",
+    "dungeonId": 1,
+    "actionToken": 0,
+    "data": {
+      "consumables": [],
+      "isJuiced": true,
+      "index": 0
+    }
+  }'
+```
+
+⚠️ **Note:** Juiced runs cost 3x energy but provide enhanced rewards and the extra upgrade option chance.
+
+---
+
 ## Leveling Between Runs ⬆️
 
 **Before EVERY run**, check for XP (scrap) and level up if possible.
@@ -383,7 +443,9 @@ curl -X POST https://gigaverse.io/api/user/auth \
 | **Set username** | Reserve and assign your name |
 | **Choose faction** | Join a faction |
 | **Check energy** | See if you can start a run |
-| **Start run** | Enter a dungeon |
+| **Check juice status** | See if you're juiced + available listings |
+| **Purchase juice** | Buy GigaJuice for premium benefits |
+| **Start run** | Enter a dungeon (juiced or regular) |
 | **Battle** | Sword/Shield/Spell combat |
 | **Loot** | Choose rewards after victories |
 | **Use items** | Activate consumables |
