@@ -106,11 +106,111 @@ curl -X POST https://gigaverse.io/api/game/dungeon/action \
 
 ---
 
-## Purchase Contract
+## Purchasing Juice
 
-**GigaJuice Contract:** [`0xd154ab0de91094bfa8e87808f9a0f7f1b98e1ce1`](https://abscan.org/address/0xd154ab0de91094bfa8e87808f9a0f7f1b98e1ce1)
+### Contract Details
 
-**Chain:** Abstract (Chain ID: 2741)
+| Field | Value |
+|-------|-------|
+| **Contract** | [`0xd154ab0de91094bfa8e87808f9a0f7f1b98e1ce1`](https://abscan.org/address/0xd154ab0de91094bfa8e87808f9a0f7f1b98e1ce1) |
+| **Chain** | Abstract (Chain ID: 2741) |
+| **RPC** | `https://api.mainnet.abs.xyz` |
+| **Function** | `purchaseGigaJuice(uint256 listingId)` |
+| **Method ID** | `0x52ce66cc` |
+
+### Listing IDs
+
+| listingId | Package | Duration | Price (ETH) |
+|-----------|---------|----------|-------------|
+| 2 | JUICE BOX | 30 days | 0.01 |
+| 3 | JUICE CARTON | 90 days | 0.023 |
+| 4 | JUICE TANK | 180 days | 0.038 |
+
+### Purchase via Script
+
+Use the included purchase script:
+
+```bash
+cd skills/gigaverse/scripts
+export NOOB_PRIVATE_KEY="0x..."
+npx ts-node purchase-juice.ts 2  # JUICE BOX
+npx ts-node purchase-juice.ts 3  # JUICE CARTON
+npx ts-node purchase-juice.ts 4  # JUICE TANK
+```
+
+### Purchase via viem (Programmatic)
+
+```typescript
+import { createWalletClient, http, parseEther, encodeFunctionData, defineChain } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+
+const abstractMainnet = defineChain({
+  id: 2741,
+  name: 'Abstract',
+  nativeCurrency: { decimals: 18, name: 'Ether', symbol: 'ETH' },
+  rpcUrls: { default: { http: ['https://api.mainnet.abs.xyz'] } },
+});
+
+const GIGAJUICE_CONTRACT = '0xd154ab0de91094bfa8e87808f9a0f7f1b98e1ce1';
+const GIGAJUICE_ABI = [{
+  name: 'purchaseGigaJuice',
+  type: 'function',
+  stateMutability: 'payable',
+  inputs: [{ name: 'listingId', type: 'uint256' }],
+  outputs: [],
+}] as const;
+
+async function purchaseJuice(privateKey: string, listingId: number, priceEth: string) {
+  const account = privateKeyToAccount(privateKey as `0x${string}`);
+  const client = createWalletClient({
+    account,
+    chain: abstractMainnet,
+    transport: http('https://api.mainnet.abs.xyz'),
+  });
+
+  const data = encodeFunctionData({
+    abi: GIGAJUICE_ABI,
+    functionName: 'purchaseGigaJuice',
+    args: [BigInt(listingId)],
+  });
+
+  return await client.sendTransaction({
+    to: GIGAJUICE_CONTRACT,
+    data,
+    value: parseEther(priceEth),
+  });
+}
+
+// Example: Buy JUICE BOX (30 days)
+await purchaseJuice(process.env.PRIVATE_KEY, 2, '0.01');
+```
+
+### Raw Transaction
+
+For manual/low-level integration:
+
+```
+To: 0xd154ab0de91094bfa8e87808f9a0f7f1b98e1ce1
+Value: 0.01 ETH (for JUICE BOX)
+Data: 0x52ce66cc0000000000000000000000000000000000000000000000000000000000000002
+       └─ method ─┘└─────────────────── listingId (2) ──────────────────────────────┘
+```
+
+### Verifying Purchase
+
+After purchase, check juice status:
+
+```bash
+curl -s "https://gigaverse.io/api/gigajuice/player/{ADDRESS}" | jq '.juiceData'
+```
+
+Expected response when juiced:
+```json
+{
+  "isJuiced": true,
+  "juicedSeconds": 2592000
+}
+```
 
 ---
 
